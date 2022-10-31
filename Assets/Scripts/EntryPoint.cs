@@ -6,33 +6,33 @@ using UnityEngine;
 
 public class EntryPoint : MonoBehaviour
 {
-    [SerializeField] private OrderManager _orderManager;
-    [SerializeField] private StartGamePopup _startGamePopup;
-    [SerializeField] private GameState _gameState;
-
-    [SerializeField] private float _waitBeforeStart;
-
-    private void Awake()
-    {
-        _startGamePopup.StartClicked += OnStartGame;
-
-        _gameState.GameSateType = GameSateType.Popup;
-    }
-
+    private OrdersManager _ordersManager;
+    
     private void Start()
     {
-        StartCoroutine(WaitALittleAndStart());
+        var gameContext = new GameContext(new GameState());
+
+        _ordersManager = new OrdersManager(gameContext);
     }
 
-    private IEnumerator WaitALittleAndStart()
+    private async void StartGame()
     {
-        yield return new WaitForSeconds(_waitBeforeStart);
-        
-        _startGamePopup.OpenPopup();
-    }
-    
-    private void OnStartGame()
-    {
-        _orderManager.BeginOrders();
+         await PopupService.OpenPopup(FtuePopupData.Default);
+
+         while (true)
+         {
+             var orderResult = await _ordersManager.StartOrder();
+
+             var orderCompletePopupResult = await PopupService.OpenPopupWithResult(new OrderCompletePopupData(orderResult));
+
+             if (orderCompletePopupResult.Success)
+             {
+                 _ordersManager.PrepareNextOrder();
+             }
+             else
+             {
+                 _ordersManager.RestartCurrentOrder();
+             }
+         }
     }
 }

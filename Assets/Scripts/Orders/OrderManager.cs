@@ -64,7 +64,7 @@ namespace Orders
             
             _orderBubble.Show(_currentOrder.GetTargetColor());
 
-            _gameState.GameSateType = GameSateType.Ordering;
+            _gameState.State = GameSateType.Ordering;
         }
 
         private void OnColorChanged(Color color)
@@ -79,7 +79,7 @@ namespace Orders
         
         private void OnShakeCompleted()
         {
-            _gameState.GameSateType = GameSateType.Popup;
+            _gameState.State = GameSateType.Popup;
             
             var result = _currentOrder.SuccessRate;
             _completePopup.OpenPopup(result);
