@@ -1,38 +1,57 @@
 ﻿using System;
 using System.Collections;
 using Food;
+using Ftue;
 using Orders;
+using Orders.Popup;
+using Popups;
 using UnityEngine;
 
 public class EntryPoint : MonoBehaviour
 {
-    [SerializeField] private OrderManager _orderManager;
-    [SerializeField] private StartGamePopup _startGamePopup;
-    [SerializeField] private GameState _gameState;
+    [SerializeField] private PopupsProvider _popupsProvider;
 
-    [SerializeField] private float _waitBeforeStart;
-
-    private void Awake()
-    {
-        _startGamePopup.StartClicked += OnStartGame;
-
-        _gameState.GameSateType = GameSateType.Popup;
-    }
 
     private void Start()
     {
-        StartCoroutine(WaitALittleAndStart());
+        var gameContext = CreateGameContext();
+
+        StartGame(gameContext);
     }
 
-    private IEnumerator WaitALittleAndStart()
+    private async void StartGame(GameContext gameContext)
     {
-        yield return new WaitForSeconds(_waitBeforeStart);
-        
-        _startGamePopup.OpenPopup();
+        await gameContext.PopupService.OpenPopup<PopupResult>(FtuePopupData.Default);
+
+        var ordersManager = new OrdersManager(gameContext);
+
+        while (true)
+        {
+            var orderResult = await ordersManager.StartOrder();
+
+            var orderCompletePopupResult = await gameContext.PopupService.OpenPopup<OrderCompletePopupResult>(new OrderCompletePopupData()
+            {
+                ResultRate = orderResult.SuccessRate,
+                Success = orderResult.Success
+            });
+
+            if (orderCompletePopupResult.GoToTheNextOrder)
+            {
+                ordersManager.PrepareNextOrder();
+            }
+            else
+            {
+                ordersManager.RestartCurrentOrder();
+            }
+        }
     }
-    
-    private void OnStartGame()
+
+    private GameContext CreateGameContext()
     {
-        _orderManager.BeginOrders();
+        var popupsService = new PopupService(_popupsProvider);
+
+        var gameContext = new GameContext(new GameState(), popupsService);
+
+        return gameContext;
     }
 }

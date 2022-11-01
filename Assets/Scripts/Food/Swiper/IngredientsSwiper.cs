@@ -24,7 +24,7 @@ namespace Food.Swiper
         
         private void Update()
         {
-            if(_gameState.GameSateType != GameSateType.Ordering) return;
+            //if(_gameState.State != GameSateType.Ordering) return;
             
             if (Time.time - _lastSwipeTime > _idleDelayFroTip)
             {

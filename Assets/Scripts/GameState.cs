@@ -1,9 +1,23 @@
-﻿using UnityEngine;
+﻿using System;
 
-[CreateAssetMenu(fileName = "GameState", menuName = "Game State")]
-public class GameState : ScriptableObject
+public class GameState
 {
-    public GameSateType GameSateType;
-}
+    public enum SateType {Paused, InGame}
+    
+    public event Action<SateType> StateChanged;
 
-public enum GameSateType {Popup, Ordering, Shaking}
+    private SateType _state;
+
+    public SateType State
+    {
+        get => _state;
+        set
+        {
+            if(_state == value) return;
+
+            _state = value;
+            
+            StateChanged?.Invoke(_state);
+        }
+    }
+}

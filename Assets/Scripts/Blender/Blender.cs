@@ -45,9 +45,9 @@ namespace Blender
         
         public void Shake()
         {
-            if(_gameState.GameSateType != GameSateType.Ordering) return;
+            //if(_gameState.State != GameSateType.Ordering) return;
             
-            _gameState.GameSateType = GameSateType.Shaking;
+            //_gameState.State = GameSateType.Shaking;
             
             if (_shakeCoroutine != null)
             {

@@ -59,7 +59,7 @@ namespace Food
         
         private void OnIngredientWasClicked(Ingredient ingredient)
         {
-            if(_gameState.GameSateType != GameSateType.Ordering) return;
+            //if(_gameState.State != GameSateType.Ordering) return;
             
             _flyer.LaunchIngredientToTarget(ingredient);
             _blender.OpenLid();
