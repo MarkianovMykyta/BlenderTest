@@ -1,38 +1,57 @@
 ﻿using System;
 using System.Collections;
 using Food;
+using Ftue;
 using Orders;
+using Orders.Popup;
+using Popups;
 using UnityEngine;
 
 public class EntryPoint : MonoBehaviour
 {
-    private OrdersManager _ordersManager;
-    
+    [SerializeField] private PopupsProvider _popupsProvider;
+
+
     private void Start()
     {
-        var gameContext = new GameContext(new GameState());
+        var gameContext = CreateGameContext();
 
-        _ordersManager = new OrdersManager(gameContext);
+        StartGame(gameContext);
     }
 
-    private async void StartGame()
+    private async void StartGame(GameContext gameContext)
     {
-         await PopupService.OpenPopup(FtuePopupData.Default);
+        await gameContext.PopupService.OpenPopup<PopupResult>(FtuePopupData.Default);
 
-         while (true)
-         {
-             var orderResult = await _ordersManager.StartOrder();
+        var ordersManager = new OrdersManager(gameContext);
 
-             var orderCompletePopupResult = await PopupService.OpenPopupWithResult(new OrderCompletePopupData(orderResult));
+        while (true)
+        {
+            var orderResult = await ordersManager.StartOrder();
 
-             if (orderCompletePopupResult.Success)
-             {
-                 _ordersManager.PrepareNextOrder();
-             }
-             else
-             {
-                 _ordersManager.RestartCurrentOrder();
-             }
-         }
+            var orderCompletePopupResult = await gameContext.PopupService.OpenPopup<OrderCompletePopupResult>(new OrderCompletePopupData()
+            {
+                ResultRate = orderResult.SuccessRate,
+                Success = orderResult.Success
+            });
+
+            if (orderCompletePopupResult.GoToTheNextOrder)
+            {
+                ordersManager.PrepareNextOrder();
+            }
+            else
+            {
+                ordersManager.RestartCurrentOrder();
+            }
+        }
+    }
+
+    private GameContext CreateGameContext()
+    {
+        var popupsService = new PopupService(_popupsProvider);
+
+        var gameContext = new GameContext(new GameState(), popupsService);
+
+        return gameContext;
     }
 }

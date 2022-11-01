@@ -1,4 +1,6 @@
-﻿namespace Orders
+﻿using System.Threading.Tasks;
+
+namespace Orders
 {
     public class OrdersManager
     {
@@ -8,8 +10,24 @@
         {
             _gameContext = gameContext;
         }
-        
-        public async void ActivateOrders()
+
+        public async Task<OrderResult> StartOrder()
+        {
+            await Task.Delay(100);//TODO: Delete
+
+            return new OrderResult()
+            {
+                SuccessRate = 0.5f,
+                Success = true
+            };
+        }
+
+        public void PrepareNextOrder()
+        {
+            
+        }
+
+        public void RestartCurrentOrder()
         {
             
         }

@@ -22,11 +22,14 @@ namespace Popups
                 var popup = _popups[i];
                 
                 var type = popup.GetType();
-                var popupDataType = type.GetGenericArguments()[0];
-
-                if (targetPopupDataType == popupDataType)
+                if (type.BaseType != null)
                 {
-                    return popup;
+                    var popupDataType = type.BaseType.GetGenericArguments()[0];
+
+                    if (targetPopupDataType == popupDataType)
+                    {
+                        return popup;
+                    }
                 }
             }
 

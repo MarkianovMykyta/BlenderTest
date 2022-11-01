@@ -30,8 +30,8 @@ namespace Orders
             _blender.IngredientMixed += OnIngredientMixed;
             _blender.ShakeCompleted += OnShakeCompleted;
 
-            _completePopup.RestartClicked += Restart;
-            _completePopup.NextClicked += StartNextOrder;
+            //_completePopup.RestartClicked += Restart;
+            //_completePopup.NextClicked += StartNextOrder;
         }
 
         private void StartNextOrder()
@@ -64,7 +64,7 @@ namespace Orders
             
             _orderBubble.Show(_currentOrder.GetTargetColor());
 
-            _gameState.State = GameSateType.Ordering;
+            //_gameState.State = GameSateType.Ordering;
         }
 
         private void OnColorChanged(Color color)
@@ -79,10 +79,10 @@ namespace Orders
         
         private void OnShakeCompleted()
         {
-            _gameState.State = GameSateType.Popup;
+           // _gameState.State = GameSateType.Popup;
             
             var result = _currentOrder.SuccessRate;
-            _completePopup.OpenPopup(result);
+            //_completePopup.OpenPopup(result);
             
             _currentOrder.ColorChanged -= OnColorChanged;
             _currentOrder = null;

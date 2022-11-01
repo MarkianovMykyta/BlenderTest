@@ -9,6 +9,8 @@ namespace Popups
         where TPopupData : PopupData 
         where TPopupResult : PopupResult
     {
+        public event Action<IPopup> PopupClosed;
+        
         [SerializeField] private Transform _panel;
         [SerializeField] private CanvasGroup _canvasGroup;
         [SerializeField] private float _openDuration;
@@ -16,18 +18,21 @@ namespace Popups
         [SerializeField] private float _closeDuration;
         [SerializeField] private Ease _closeEase;
 
-        private TaskCompletionSource<TPopupResult> _popupTask;
+        protected TaskCompletionSource<TPopupResult> PopupTask;
+        protected TPopupData Data;
 
         public async Task<PopupResult> Open(PopupData popupData)
-        {
-            var targetPopupData = popupData as TPopupData;
-            if (targetPopupData == null)
+        { 
+            Data = popupData as TPopupData;
+            if (Data == null)
             {
                 throw new Exception(
                     $"Popup Data type wi wrong! Expected {typeof(TPopupData)} but got {popupData.GetType()}");
             }
+
+            SetupData(Data);
             
-            SetupData(targetPopupData);
+            gameObject.SetActive(true);
 
             _panel.DOScale(Vector3.one, _openDuration).From(Vector3.zero).SetEase(_openEase);
             _canvasGroup.DOFade(1, _openDuration).From(0).SetEase(_openEase);
@@ -36,18 +41,21 @@ namespace Popups
             
             OnPopupOpened();
 
-            _popupTask = new TaskCompletionSource<TPopupResult>();
-            return await _popupTask.Task;
+            PopupTask = new TaskCompletionSource<TPopupResult>();
+            return await PopupTask.Task;
         }
         
-        public async Task Close()
+        public async void Close()
         {
             _panel.DOScale(Vector3.zero, _closeDuration).SetEase(_closeEase);
             _canvasGroup.DOFade(0, _closeDuration).SetEase(_closeEase);
 
             await Task.Delay(TimeSpan.FromSeconds(_closeDuration / Time.timeScale));
             
+            
             OnPopupClosed();
+            
+            PopupClosed?.Invoke(this);
         }
 
         protected virtual void OnPopupOpened(){}
