@@ -8,4 +8,8 @@ Each ingredient has ScriptaObject data, Prefab with Ingredient.cs script and a m
 This materail should be used in Scriptable object data and in the MeshRenderer. 
 It made this way to be easier to setup colors for orders and for meshes - so they visualy the same.
 
-Also added android build.
+Added android build.
+
+Doing refactoring in a separate branch. 
+Created PR to see the difference.
+Refactoring branch is not playable yet.
