@@ -5,11 +5,11 @@ namespace Blender
 {
     public class ShakeButton : MonoBehaviour
     {
-        [SerializeField] private Blender _blender;
+        public event Action ShakeClicked;
         
         private void OnMouseDown()
         {
-            _blender.Shake();
+            ShakeClicked?.Invoke();
         }
     }
 }

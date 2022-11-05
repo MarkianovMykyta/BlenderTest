@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using DG.Tweening;
 using Food;
 using UnityEngine;
@@ -7,7 +8,7 @@ using UnityEngine.Serialization;
 
 namespace Blender
 {
-    public class Blender : MonoBehaviour
+    public class Blender : MonoBehaviour, IBlender
     {
         private static readonly int AnimationOpenTriggerName = Animator.StringToHash("Open");
         private static readonly int AnimationCloseTriggerName = Animator.StringToHash("Close");
@@ -24,11 +25,45 @@ namespace Blender
         [SerializeField] private Animator _animator;
         [SerializeField] private float _timeBeforeLidClose;
         [SerializeField] private GameState _gameState;
+        [SerializeField] private ShakeButton _shakeButton;
+        [SerializeField] private IngredientsManager _ingredientsManager;
         
         private Coroutine _shakeCoroutine;
         private Coroutine _waitForCloseCoroutine;
 
-        public void OpenLid()
+        private List<Ingredient> _mixedIngredients;
+        
+        public void Clean()
+        {
+            _liquidMat.sharedMaterial.SetFloat("_Fill", 0f);
+            
+            if (_shakeCoroutine != null)
+            {
+                StopCoroutine(_shakeCoroutine);
+            }
+            
+            _ingredientsMixer.gameObject.SetActive(false);
+            _ingredientsMixer.transform.localPosition = Vector3.zero;
+            
+            _mixedIngredients.Clear();
+        }
+        
+        private void Awake()
+        {
+            _mixedIngredients = new List<Ingredient>();
+            
+            _ingredientsMixer.IngredientMixed += OnIngredientMixed;
+            _shakeButton.ShakeClicked += OnShakeClicked;
+            _ingredientsManager.IngredientClicked += OnIngredientClicked;
+            Clean();
+        }
+
+        private void OnIngredientClicked(Ingredient ingredient)
+        {
+            OpenLid();
+        }
+        
+        private void OpenLid()
         {
             if (_waitForCloseCoroutine != null)
             {
@@ -42,8 +77,8 @@ namespace Blender
             
             _waitForCloseCoroutine = StartCoroutine(WaitBeforeCloseRoutine());
         }
-        
-        public void Shake()
+
+        private void OnShakeClicked()
         {
             //if(_gameState.State != GameSateType.Ordering) return;
             
@@ -55,33 +90,6 @@ namespace Blender
             }
             
             _shakeCoroutine = StartCoroutine(ShakeRoutine());
-        }
-
-        public void Clean()
-        {
-            _liquidMat.sharedMaterial.SetFloat("_Fill", 0f);
-            
-            if (_shakeCoroutine != null)
-            {
-                StopCoroutine(_shakeCoroutine);
-            }
-            
-            _ingredientsMixer.gameObject.SetActive(false);
-            _ingredientsMixer.transform.localPosition = Vector3.zero;
-        }
-        
-        public void UpdateLiquidColor(Color color)
-        {
-            _liquidMat.sharedMaterial.SetColor("_Color", color);
-
-            var main = _shakeEffect.main;
-            main.startColor = color;
-        }
-
-        private void Awake()
-        {
-            _ingredientsMixer.IngredientMixed += OnIngredientMixed;
-            Clean();
         }
 
         private IEnumerator ShakeRoutine()
@@ -118,7 +126,21 @@ namespace Blender
 
         private void OnIngredientMixed(Ingredient ingredient)
         {
+            _mixedIngredients.Add(ingredient);
+            
+            UpdateColor();
+            
             IngredientMixed?.Invoke(ingredient);
+        }
+        
+        private void UpdateColor()
+        {
+            var color = ColorHelper.GetColorFromIngredients(_mixedIngredients);
+            
+            _liquidMat.sharedMaterial.SetColor("_Color", color);
+
+            var main = _shakeEffect.main;
+            main.startColor = color;
         }
     }
 }

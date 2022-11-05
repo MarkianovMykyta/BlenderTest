@@ -124,7 +124,7 @@ GameObject:
   - component: {fileID: 800186906}
   - component: {fileID: 800186905}
   m_Layer: 0
-  m_Name: Button
+  m_Name: ShakeButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -220,7 +220,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ce1231bdab64f69bed579f134c5d8ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _blender: {fileID: 5092549959928513006}
 --- !u!1 &2276627637604433
 GameObject:
   m_ObjectHideFlags: 0
@@ -5345,6 +5344,8 @@ MonoBehaviour:
   _shakeEffect: {fileID: 1722812581457990719}
   _animator: {fileID: 5092549961400590007}
   _timeBeforeLidClose: 2
+  _shakeButton: {fileID: 800186905}
+  _ingredientsManager: {fileID: 0}
 --- !u!95 &5092549961400590007
 Animator:
   serializedVersion: 4

@@ -3120,7 +3120,6 @@ MonoBehaviour:
   _spawner: {fileID: 1352384642}
   _swiper: {fileID: 2030164621}
   _flyer: {fileID: 874312587}
-  _blender: {fileID: 5092549961400590003}
 --- !u!1 &1313295052
 GameObject:
   m_ObjectHideFlags: 0
@@ -3249,34 +3248,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1350353786}
-  - component: {fileID: 1350353785}
+  - component: {fileID: 1350353787}
   m_Layer: 0
-  m_Name: OrderManager
+  m_Name: OrdersProvider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1350353785
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1350353784}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ead5a97ffd444cfc9bd1082e63cc4dc4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _recipes:
-  - {fileID: 11400000, guid: 1aed1ec5bb1dbf147989fd4b4d877994, type: 2}
-  - {fileID: 11400000, guid: 45b6fbbe7a67b434dac4eb2714042e87, type: 2}
-  - {fileID: 11400000, guid: f23d531aad0f4944d8fa02c9c0a8fe8f, type: 2}
-  _blender: {fileID: 5092549961400590003}
-  _ingredientsManager: {fileID: 1304988732}
-  _completePopup: {fileID: 1408776893}
-  _orderBubble: {fileID: 855606123}
 --- !u!4 &1350353786
 Transform:
   m_ObjectHideFlags: 0
@@ -3292,6 +3271,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1350353787
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1350353784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c211b723e024de885d7222c973f92c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _recieps:
+  - {fileID: 11400000, guid: 1aed1ec5bb1dbf147989fd4b4d877994, type: 2}
+  - {fileID: 11400000, guid: 45b6fbbe7a67b434dac4eb2714042e87, type: 2}
+  - {fileID: 11400000, guid: f23d531aad0f4944d8fa02c9c0a8fe8f, type: 2}
+  _orderBubble: {fileID: 855606123}
 --- !u!1 &1352384640
 GameObject:
   m_ObjectHideFlags: 0
@@ -3387,18 +3383,6 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 4084322759359720282}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1408776893 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4084322757961437671, guid: e78e33a883d00ce46ae99c0aebadb01a,
-    type: 3}
-  m_PrefabInstance: {fileID: 4084322759359720282}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 96df02ac8c4b4a7db0fd9c9a425b05f2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &1424129892
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4837,6 +4821,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _popupsProvider: {fileID: 1691609922}
+  _ordersProvider: {fileID: 1350353787}
+  _blender: {fileID: 5092549961400590003}
+  _ingredientsManager: {fileID: 1304988732}
 --- !u!4 &2039287423
 Transform:
   m_ObjectHideFlags: 0
@@ -5321,10 +5308,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5092549959928513006, guid: 386defd4cef3c96489651db59934c51c,
         type: 3}
-      propertyPath: _gameState
+      propertyPath: _ingredientsManager
       value: 
-      objectReference: {fileID: 11400000, guid: dcd7f023a41d0804cb2ef6a748bca4b6,
-        type: 2}
+      objectReference: {fileID: 1304988732}
     - target: {fileID: 5097181126538083243, guid: 386defd4cef3c96489651db59934c51c,
         type: 3}
       propertyPath: m_RootOrder

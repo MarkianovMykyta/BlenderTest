@@ -7,27 +7,24 @@ using UnityEngine;
 
 namespace Food
 {
-    public class IngredientsManager : MonoBehaviour
+    public class IngredientsManager : MonoBehaviour, IIngredientsManager
     {
+        public event Action<Ingredient> IngredientClicked; 
+
         [SerializeField] private IngredientsSpawner _spawner;
         [SerializeField] private IngredientsSwiper _swiper;
         [SerializeField] private IngredientsFlyer _flyer;
-        [SerializeField] private Blender.Blender _blender;
-        [SerializeField] private GameState _gameState;
 
         private List<Ingredient> _availableIngredients;
 
-        public void Activate()
-        {
-            _spawner.Activate();
-        }
-        
         public void Restart()
         {
             for (int i = _availableIngredients.Count - 1; i >= 0; i--)
             {
                 _availableIngredients[i].DestroyIngredient();
             }
+            
+            _spawner.Activate();
         }
         
         private void Awake()
@@ -59,10 +56,8 @@ namespace Food
         
         private void OnIngredientWasClicked(Ingredient ingredient)
         {
-            //if(_gameState.State != GameSateType.Ordering) return;
-            
             _flyer.LaunchIngredientToTarget(ingredient);
-            _blender.OpenLid();
+            IngredientClicked?.Invoke(ingredient);
         }
     }
 }

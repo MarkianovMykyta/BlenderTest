@@ -1,23 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using Food;
 using Food.Data;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Orders
 {
     public class Order
     {
-        public event Action<Color> ColorChanged; 
-
-        private RecipeData _recipe;
-
         private List<Ingredient> _addedIngredients;
 
-        private Color _resultColor;
-
+        public RecipeData Recipe { get; private set; }
+        
         public float SuccessRate
         {
             get
@@ -25,9 +18,9 @@ namespace Orders
                 var matchedElements = 0f;
 
                 var addedIngredientsTemp = new List<Ingredient>(_addedIngredients);
-                for (var i = 0; i < _recipe.Ingredients.Count; i++)
+                for (var i = 0; i < Recipe.Ingredients.Count; i++)
                 {
-                    var targetIngredient = _recipe.Ingredients[i];
+                    var targetIngredient = Recipe.Ingredients[i];
 
                     var addedIngredient = addedIngredientsTemp.Find(x => x.Data == targetIngredient.Data);
                     if (addedIngredient != null)
@@ -37,7 +30,7 @@ namespace Orders
                     }
                 }
 
-                var max = Mathf.Max(_recipe.Ingredients.Count, _addedIngredients.Count);
+                var max = Mathf.Max(Recipe.Ingredients.Count, _addedIngredients.Count);
                 var rate = matchedElements / max;
                 
                 return rate;
@@ -46,41 +39,15 @@ namespace Orders
 
         public Order(RecipeData recipe)
         {
-            _recipe = recipe;
+            Recipe = recipe;
 
             _addedIngredients = new List<Ingredient>();
-            
-            _resultColor = Color.black;
         }
+
 
         public void AddIngredient(Ingredient ingredient)
         {
             _addedIngredients.Add(ingredient);
-
-            _resultColor = Color.black;
-
-            for (int i = 0; i < _addedIngredients.Count; i++)
-            {
-                _resultColor += _addedIngredients[i].Data.Color;
-            }
-
-            _resultColor /= _addedIngredients.Count;
-            
-            ColorChanged?.Invoke(_resultColor);
-        }
-
-        public Color GetTargetColor()
-        {
-            var targetColor = Color.black;
-
-            for (int i = 0; i < _recipe.Ingredients.Count; i++)
-            {
-                targetColor += _recipe.Ingredients[i].Data.Color;
-            }
-
-            targetColor /= _recipe.Ingredients.Count;
-
-            return targetColor;
         }
     }
 }
